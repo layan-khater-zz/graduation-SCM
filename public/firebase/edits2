@@ -1,0 +1,244 @@
+  
+  $(function()
+  {
+  var projectKey=extractProjectKey();
+  var diagramKey=extractDiagramKey();
+  var element=database.child("projects").child(projectKey).child(diagramKey).child("elements"); 
+  var diagram =[];
+    var canvas = $(".canvas");
+    var tools = $(".tools");
+    
+    var ClassShape="<div class='tool shapeClass'><div class='tr'>Class Name</div></div>";
+    
+
+    
+          
+            $(".tool").draggable({
+                helper: "clone"
+            });
+            canvas.droppable({
+
+                drop: function(event, ui) {
+                      var node = {
+                        _id: (new Date).getTime(),
+                        position: ui.helper.position()
+                    };
+                    
+                        // node.position.left-=canvas.position.left;
+                    if(ui.helper.hasClass("arrow")){
+                        node.type = "arrow";
+                    } else if(ui.helper.hasClass("shapeClassOriginal")){
+                        node.type = "shapeClass";
+
+                    }else {
+                        return;
+                    }
+                    diagram.push(node);
+               
+                    renderDiagram(diagram);
+                }
+            });
+            ////////////////////////add dragged element////////////////////////
+            function renderDiagram(diagram) {
+               
+                    var node = diagram[diagram.length-1];
+                   
+                    var html;
+                    if(node.type=="shapeClass") {
+                        html = ClassShape;
+                    } else if(node.type === "arrow") {
+                        html = "<img class='tool  arrowed' src='layout/img/arrow.png' style='width:100px;'>";
+                    } 
+                
+                    var dom = $(html).css({
+                        "position": "absolute",
+                        "top": diagram[diagram.length-1].position().top,
+                        "left": diagram[diagram.length-1].position().left
+                    }).draggable({
+                        stop: function(event, ui) {
+                            var id = ui.helper.attr("id");
+                            for(var i in diagram) {
+                                if(diagram[i]._id == id) {//////////////////////edit if dragged  elements moved and save edits in firebase/////////
+                                    diagram[i].position.top = ui.position.top;
+                                    diagram[i].position.left = ui.position.left;
+                                    element.once('value',function(snapshot) {
+                                    snapshot.forEach(function(childSnapshot) {
+                                    var childKey = childSnapshot.key;
+                                    var childId = childSnapshot.child("id").val();
+                                    if (diagram[d]._id == childId){
+                                        element.child(childKey).update({
+                                            left:diagram[i].position.left,
+                                            top:diagram[i].position.top
+                                        }); 
+                                    }
+
+                                 });
+                                });
+                                }
+                            }
+                            },
+                            helper:"original"
+
+
+                  }).attr("id",node._id);
+                /////////////////////edit if dragged  elements moved/////////
+                alert(dom.position().top+" "+node.position.top);
+                alert(dom.position().left+" "+node.position.left);
+                    canvas.append(dom);
+
+                   
+    
+                }
+               
+                    
+                    
+
+                    function addElement(diagram){
+                        var type=diagram[diagram.length-1].type;
+                        var top=diagram[diagram.length-1].position.top;
+                        var left=diagram[diagram.length-1].position.left;
+                        var id=diagram[diagram.length-1]._id;
+                        element.push().set({
+                        id:id,
+                        type:type,
+                        top:top,
+                        left:left  
+                    });
+                     
+                    }
+             
+/////////////////////////////////////end add element////////////////////////////////////////////
+////////////////////////added elemnts listener from firebase/////////////////////////////// 
+                     
+            //   element.on('child_added',snap =>{
+            //         var id=snap.val().id;
+            //         var type=snap.val().type;
+            //         var left=snap.val().left;
+            //         var top=snap.val().top;
+            //             if(canvas.find("#"+id).length == 0) ///check if element is not  exist at canvas
+            //             {
+            //                 var node={
+            //                     _id:id,
+            //                     left:left,
+            //                     top:top
+            //                 }
+            //       if (type =="shapeClass"){
+            //        var  html=$(ClassShape).css({
+            //             position: "absolute",
+            //             top:top,
+            //             left:left
+            //         }).draggable({
+            //             stop: function(event, ui) {
+            //                 var id = ui.helper.attr("id");
+            //                 for(var i in  diagram) {////////////////////edit if dragged  elements moved and save edits in firebase///
+            //                     if(diagram[i].attr("id") == id) {
+            //                         diagram[i].position.top = ui.position.top;
+            //                         diagram[i].position.left = ui.position.left;
+            //                         element.once('value',function(snapshot) {
+            //                         snapshot.forEach(function(childSnapshot) {
+            //                         var childKey = childSnapshot.key;
+            //                         var childData = childSnapshot.child("id").val();
+            //                         if ( diagram[i].attr("id") == childData){
+            //                             element.child(childKey).update({
+            //                                 left:diagram[i].position.left,
+            //                                 top:diagram[i].position.top
+            //                             }); 
+            //                         }
+
+            //                      });
+            //                     });  
+            //                 }
+            //             }
+            //         },
+            //             helper:"original"
+                        
+            //         }).attr("id",id);
+            //         ////////////////end edit if dragged  elements moved and save edits in firebase///////////////
+            //         canvas.append(html);
+            //         diagram.push(html);
+            //     }
+                           
+            // }
+             
+            // });
+             
+ ////////////////////////end added elemnts listener from firebase///////////////////////////////  
+
+
+ element.on("child_removed",snap=>{
+     var id=snap.val().id;
+     if($("#"+id)==1){
+     var element=document.getElementById(id);
+     element.remove();
+     }
+
+ });
+
+//  element.on("child_changed",snap=>{
+//      var id=snap.val().id;
+//      var top=snap.val().top;
+//      var left=snap.val().left;
+//      var type=snap.val().type;
+//      var element=$("#"+id);
+//      var NewElement=$().css({
+//                         position: "absolute",
+//                         top:top,
+//                         left:left
+//                     }).draggable({
+//                         stop: function(event, ui) {
+//                             var id = ui.helper.attr("id");
+//                             for(var i in  diagram) {////////////////////edit if dragged  elements moved and save edits in firebase///
+//                                 if(diagram[i].attr("id") == id) {
+//                                     diagram[i].position.top = ui.position.top;
+//                                     diagram[i].position.left = ui.position.left;
+//                                     element.once('value',function(snapshot) {
+//                                     snapshot.forEach(function(childSnapshot) {
+//                                     var childKey = childSnapshot.key;
+//                                     var childData = childSnapshot.child("id").val();
+//                                     if ( diagram[i].attr("id") == childData){
+//                                         element.child(childKey).update({
+//                                             left:diagram[i].position.left,
+//                                             top:diagram[i].position.top
+//                                         }); 
+//                                     }
+
+//                                  });
+//                                 });  
+//                             }
+//                         }
+//                     },
+//                         helper:"original"
+                        
+//                     }).attr("id",id);
+//                     for(var d in diagram){
+//                         if(diagram[d]._id==id){
+//                          diagram.slice(d);
+
+//                         }
+//                     }
+//                    element.remove();
+//                    canvas.append(NewElement);
+
+//  });
+            function extractProjectKey(){
+    ////extracting project key//////
+    var link=window.location.href+"";
+    var start=link.search("-"); ///projecy keystart position
+    var end=link.search("&");
+    var projectKey=link.substring(start,end);
+    return projectKey;
+    /////////////////////
+    
+ }
+ function extractDiagramKey(){
+    ////extracting project key//////
+    var link=window.location.href+"";
+    var start=link.search("dId="); ///projecy keystart position
+    var diagramKey=link.substring(start+4,link.length);
+    return diagramKey;
+    /////////////////////
+    
+ }
+});
+
+            

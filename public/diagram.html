@@ -1,0 +1,71 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Title </title>
+          <link rel="stylesheet" type="text/css" href="layout/css/bootstrap.min.css"/>
+          <link rel="stylesheet" type="text/css" href="layout/css/diagram.css"/>
+
+
+    </head>
+    <body> 
+            <div class="diagrams">
+           <a data-toggle="modal"  data-target="#create-diagram">
+           <div class="new-diagram-icon">
+            <div >Create Diagram</div>
+           </div> 
+        </a> 
+    </div>
+ 
+
+        <!-- Create Diagram modal -->
+        <!-- Trigger the modal with a button -->
+
+        <!-- Modal -->
+            <div id="create-diagram" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+
+        <!-- Modal content-->
+            <div class="modal-content">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Create Diagram</h4>
+            <br><br>
+            <div class="modal-body">
+            <div class="form-group">
+            <label for="InputDiagram">Diagram Name:</label>
+            <input type="text" class="form-control" id="InputDiagram"  placeholder="Enter your diagram name" name="diagram-name" required>
+            </div>
+            <input type="button" class="btn btn-default create-modal" data-dismiss="modal" value="Close">
+            <input type="button" class="btn btn-default create-diagram create-modal"  value="Create" >
+            
+        </div>
+
+              </div>
+            </div>
+         </div>
+
+         <input type="button" class="btn btn-primary"  value="Sign-out" id="signoutbtn">
+         <input type="button" class="btn btn-primary"  value="Leave Project" id="LeaveProject">
+         <input type="button" class="btn btn-primary"  value="Add Member" id="addMember">
+
+         <div class="AddMemModal">
+                             
+            <h1 >Add New Member</h1>
+            <div class="members-input">
+                      <input type="text" placeholder="Enter Member Email" name="email"  class="email-addMem">
+                    </div>
+                     <button type="button" id="AddMem" >Add<i class="glyphicon glyphicon-plus " id="addMemberInput-icon"></i> </button>        
+      </div>
+    
+        <div class="footer">
+        </div>
+        <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
+        <script src="layout/js/jquery-3.3.1.min.js"></script>
+        <script src="layout/js/popper.min.js"></script>
+        <script src="layout/js/bootstrap.min.js"></script>
+        <script src="firebase/diagram.js" type="module"></script>
+        <script src="layout/js/backend.js"></script>
+
+        
+            </body>
+        </html>

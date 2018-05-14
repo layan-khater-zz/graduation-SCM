@@ -1,0 +1,75 @@
+
+/* 
+    Created on : Feb 11, 2018, 8:46:23 PM
+    Author     : layan
+*/
+/* index */
+
+
+#bg-home{
+    background-image: url("../img/background.png");
+    background-attachment: fixed;
+    height: 100%;
+    width: 100%;
+}
+
+
+
+
+.navgation{
+border-bottom:1px solid rgba(255, 255, 255, 0.562) ;
+height: 50px;
+color: white;
+}
+ul{
+    margin-right:40px; 
+}
+nav>ul>li{
+    display: inline;
+}
+
+.btn-nav-home{
+    margin: 2px 0px 0 20px;
+    float: right;
+    border-width:0.5px;
+    color: white;
+    background: none;
+    border:none;
+
+}
+/* end index page */
+
+.fa-plus{
+    color: #2881e3;
+    padding: 20;
+}
+
+
+ h4.modal-title{
+    text-align: center;
+    font-size: 25px;
+}
+div.modal-content>button{
+    text-align: right;
+    margin: 5px;
+}
+
+
+div.modal-body>div.form-group>label{
+    font-size:17px;
+}
+
+button.create-project{
+    margin:10 5 0 5;
+    background-color: #2881e3;
+    color: white;
+    width: 100px;
+}
+div.form-group{
+    margin: 0 0 40px;
+    
+}
+div.modal-content{
+    color: #2881e3;
+   
+}

@@ -1,0 +1,328 @@
+
+<html>
+    <head>
+        <title>
+            DEMO
+        </title>
+
+        
+
+
+
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel = "stylesheet">
+<script src = "https://code.jquery.com/jquery-1.10.2.js"></script>
+<script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    
+</head>
+<script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
+
+
+<!-- Latest compiled and minified CSS -->
+
+<script>
+  // Initialize Firebase
+ 
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyB__a3Pk1c1GDQc2zknguIfu4_ECZBbUW0",
+    authDomain: "together-d9ca0.firebaseapp.com",
+    databaseURL: "https://together-d9ca0.firebaseio.com",
+    projectId: "together-d9ca0",
+    storageBucket: "together-d9ca0.appspot.com",
+    messagingSenderId: "905615168908"
+  };
+  firebase.initializeApp(config);
+  var database=firebase.database().ref();
+
+
+$(document).ready(function(){ 
+    var projectKey=extractProjectKey();
+  var diagramKey=extractDiagramKey();
+  var d1=database.child("projects").child(projectKey).child(diagramKey).child("elements"); 
+  var diagram =[];
+    var diagramAdded=[];
+    var canvas = $(".canvas");
+    var tools = $(".tools"); 
+    
+
+    
+          
+            $(".tool").draggable({
+                helper: "clone"
+            });
+            canvas.droppable({
+                drop: function(event, ui) {
+                      var node = {
+                        _id: (new Date).getTime(),
+                        position: ui.helper.position()
+                    };
+                    node.position.left -=canvas.position().left;
+                    if(ui.helper.hasClass("arrow")){
+                        node.type = "arrow";
+                    } else if(ui.helper.hasClass("sequare")){
+                        node.type = "sequare";
+                    }else {
+                        return;
+                    }
+                    diagram.push(node);
+                    renderDiagram(diagram);
+                }
+            });
+            ////////////////////////add dragged element////////////////////////
+            function renderDiagram(diagram) {
+                for(var d in diagram)
+                {
+                    var node = diagram[d];
+                    var html = "";
+                    if(node.type === "sequare") {
+                        html = "<img class='tool sequared' src='layout/img/sequare.svg' style='width:100px;'>";
+                    } else if(node.type === "arrow") {
+                        html = "<img class='tool  arrowed' src='layout/img/arrow.png' style='width:100px;'>";
+                    } 
+                
+                    var dom = $(html).css({
+                        "position": "absolute",
+                        "top": node.position.top,
+                        "left": node.position.left,
+                    }).draggable({
+                        stop: function(event, ui) {
+                            var id = ui.helper.attr("id");
+                            for(var i in diagram) {
+                                if(diagram[i]._id == id) {//////////////////////edit if dragged  elements moved and save edits in firebase/////////
+                                    diagram[i].position.top = ui.position.top;
+                                    diagram[i].position.left = ui.position.left;
+                                    d1.once('value',function(snapshot) {
+                                    snapshot.forEach(function(childSnapshot) {
+                                    var childKey = childSnapshot.key;
+                                    var childData = childSnapshot.child("id").val();
+                                    if (diagram[d]._id == childData){
+                                        d1.child(childKey).update({
+                                            left:diagram[i].position.left,
+                                            top:diagram[i].position.top
+                                        }); 
+                                    }
+
+                                 });
+                                });
+                                }
+                            }
+                            },
+                            helper:"original"
+
+
+                  }).attr("id",node._id);
+                /////////////////////edit if dragged  elements moved/////////
+                    canvas.append(dom);
+                    console.log(diagram);
+                    alert(diagram);
+                   
+    
+                }
+               addElement(diagram);
+                    }
+                    
+
+                    function addElement(diagram){
+                        var type=diagram[diagram.length-1].type;
+                        var top=diagram[diagram.length-1].position.top;
+                        var left=diagram[diagram.length-1].position.left;
+                        var id=diagram[diagram.length-1]._id;
+                    d1.push().set({
+                        id:id,
+                        type:type,
+                        top:top,
+                        left:left  
+                    });
+                     
+                    }
+             
+/////////////////////////////////////end add element////////////////////////////////////////////
+////////////////////////added elemnts listener from firebase/////////////////////////////// 
+                     
+             d1.on('child_added',snap =>{
+                    var id=snap.val().id;
+                    var type=snap.val().type;
+                    var left=snap.val().left;
+                    var top=snap.val().top;
+                        if(canvas.find("#"+id).length == 0) ///check if element is not  exist at canvas
+                        {
+                            var node={
+                                _id:id,
+                                left:left,
+                                top:top
+                            }
+                            if (type =="sequare"){
+                   var  html=$("<img class='tool sequared' src='layout/img/sequare.svg'>").css({
+                        position: "absolute",
+                        top:top,
+                        left:left
+                    }).draggable({
+                        stop: function(event, ui) {
+                            var id = ui.helper.attr("id");
+                            for(var i in  diagram) {////////////////////edit if dragged  elements moved and save edits in firebase///
+                                if(diagram[i].attr("id") == id) {
+                                    diagram[i].position.top = ui.position.top;
+                                    diagram[i].position.left = ui.position.left;
+                                    d1.once('value',function(snapshot) {
+                                    snapshot.forEach(function(childSnapshot) {
+                                    var childKey = childSnapshot.key;
+                                    var childData = childSnapshot.child("id").val();
+                                    if ( diagram[i].attr("id") == childData){
+                                        d1.child(childKey).update({
+                                            left:diagram[i].position.left,
+                                            top:diagram[i].position.top
+                                        }); 
+                                    }
+
+                                 });
+                                });  
+                            }
+                        }
+                    },
+                        helper:"original"
+                        
+                    }).attr("id",id);
+                    ////////////////end edit if dragged  elements moved and save edits in firebase///////////////
+                    canvas.append(html);
+                    diagram.push(html);
+                }
+                           
+            }
+             
+            });
+             
+ ////////////////////////end added elemnts listener from firebase///////////////////////////////  
+
+
+ d1.on("child_removed",snap=>{
+     var i=1;
+     i++;
+     var id=snap.val().id;
+     var element=document.getElementById(id);
+     element.remove();
+
+ });
+
+ d1.on("child_changed",snap=>{
+     var id=snap.val().id;
+     var top=snap.val().top;
+     var left=snap.val().left;
+     var type=snap.val().type;
+     var element=$("#"+id);
+     var NewElement=$("<img class='tool sequared' src='layout/img/sequare.svg'>").css({
+                        position: "absolute",
+                        top:top,
+                        left:left
+                    }).draggable({
+                        stop: function(event, ui) {
+                            var id = ui.helper.attr("id");
+                            for(var i in  diagram) {////////////////////edit if dragged  elements moved and save edits in firebase///
+                                if(diagram[i].attr("id") == id) {
+                                    diagram[i].position.top = ui.position.top;
+                                    diagram[i].position.left = ui.position.left;
+                                    d1.once('value',function(snapshot) {
+                                    snapshot.forEach(function(childSnapshot) {
+                                    var childKey = childSnapshot.key;
+                                    var childData = childSnapshot.child("id").val();
+                                    if ( diagram[i].attr("id") == childData){
+                                        d1.child(childKey).update({
+                                            left:diagram[i].position.left,
+                                            top:diagram[i].position.top
+                                        }); 
+                                    }
+
+                                 });
+                                });  
+                            }
+                        }
+                    },
+                        helper:"original"
+                        
+                    }).attr("id",id);
+                    for(var d in diagram){
+                        if(diagram[d]._id==id){
+                         diagram.slice(d);
+
+                        }
+                    }
+                   element.remove();
+                   canvas.append(NewElement);
+                   console.log(diagram);
+
+                 
+                   
+
+
+
+    //  alert("here");
+
+
+ });
+            function extractProjectKey(){
+    ////extracting project key//////
+    var link=window.location.href+"";
+    var start=link.search("-"); ///projecy keystart position
+    var end=link.search("&");
+    var projectKey=link.substring(start,end);
+    return projectKey;
+    /////////////////////
+    
+ }
+ function extractDiagramKey(){
+    ////extracting project key//////
+    var link=window.location.href+"";
+    var start=link.search("dId="); ///projecy keystart position
+    var diagramKey=link.substring(start+4,link.length);
+    return diagramKey;
+    /////////////////////
+    
+ }
+
+            
+            
+            
+            }); //end jquery
+        
+</script>
+<style>
+    .tool{
+        width:100px ;
+    }
+   
+    .btn{
+        margin: 20px;
+    }
+    .canvas
+    {
+       overflow: visible; 
+    }
+  
+</style>
+<body>
+    <div class="container-fluid" style="position:absolute; top:0px; left:0px; right:0px; bottom:0px;">
+        <div class="row" style="position:relative; height:100%;">
+        <div class="col-xs-3 tools" style="background-color:white; color:black; position:absolute; top:0px; left:0px;  bottom:0px; z-index:2;">
+            <h2>Tools</h2>
+            <img class="tool arrow" src="layout/img/arrow.png">
+            <img class="tool sequare" src="layout/img/sequare.svg">
+            <button class="btn btn-primary">save</button>
+
+
+        </div>
+        <div class="canvas col-xs-9" style=" background-image:url('layout/img/background.jpg'); position:absolute; top:0px; bottom:0px; right:0px;">
+        </div>
+
+    </div>
+
+    </div>
+      </body>
+    </html>

@@ -1,0 +1,80 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Title </title>
+        <link rel="stylesheet" type="text/css" href="layout/css/bootstrap.min.css"/>
+        <link rel="stylesheet" type="text/css" href="layout/css/project.css"/>
+      
+
+
+    </head>
+    <body>             
+            <div class="projects">
+           <a data-toggle="modal"  data-target="#create-project">
+           <div class="new-project-icon">
+            <div>Create Project</div>
+           </div> 
+        </a> 
+    </div>
+
+           
+        
+        <!-- Create project modal -->
+        <!-- Trigger the modal with a button -->
+
+        <!-- Modal -->
+            <div id="create-project" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+
+        <!-- Modal content-->
+            <div class="modal-content">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Create Project</h4>
+            <br><br>
+            <div class="modal-body">
+            <div class="form-group">
+            <label for="InputProject">Project Name:</label>
+            <input type="text" class="form-control" id="InputProject"  placeholder="Enter your project name" name="Project-name" required>
+            </div>
+            </div>
+            <center>
+            <input type="button" class="btn btn-default create-modal" data-dismiss="modal" value="Close">
+            <input type="button" class="btn btn-default create-project create-modal"  value="Create" >
+        </center>    
+        </div>
+            </div>
+         </div>
+         <input type="button" class="btn btn-default"  value="Sign-out" id="signoutbtn">
+
+
+     
+
+                      
+        
+
+        
+
+
+
+      
+        
+           
+                  
+                    
+
+
+
+
+
+
+                <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
+                <script src="layout/js/jquery-3.3.1.min.js"></script>
+                <script src="layout/js/popper.min.js"></script>
+                <script src="layout/js/bootstrap.min.js"></script>
+                <script src="layout/js/backend.js"></script>
+                <script src="firebase/project.js" type="module"></script>  
+      
+    
+            </body>
+        </html>

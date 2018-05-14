@@ -1,0 +1,50 @@
+body{
+    background-image: url("../img/background.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    height: 100%;
+    width: 100%;
+    
+}
+nav{
+    color:white;
+    padding: 11px;
+    z-index: 2;
+    
+    }
+
+    .navgation{
+        border-bottom: 3px solid rgba(255, 255, 255, .5);
+        height: 50px;
+        }
+        ul{
+            margin-right:40px; 
+        }
+        nav>ul>li{
+            display: inline;
+        }
+        label{
+            color:orange;
+        
+        }
+
+        
+        a{
+            margin: 2px 0px 0 20px;
+            float: right;
+            cursor: hand;
+            
+        }
+        a:hover{
+
+           border-bottom:solid; 
+           border-bottom-color:orange;
+        }
+
+        
+
+    h2{
+    color:orange;
+    }

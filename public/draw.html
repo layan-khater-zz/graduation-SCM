@@ -1,0 +1,47 @@
+
+<html>
+    <head>
+        <title>draw page</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+<link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css"   rel = "stylesheet">
+<link rel="stylesheet" type="text/css" href="layout/css/draw.css"/>
+
+<body>
+    <div class="container-fluid" style="position:absolute; top:0px; left:0px; right:0px; bottom:0px;">
+        <div class="row" style="position:relative; height:100%; "> 
+            <div class="tools">            
+            <h2>Tools</h2>
+            <hr>
+            <div class="row">
+            <div class="tool sequare-original"></div>
+            <div class="tool arrow-original">
+                <div class="line"></div>
+                <div class="point"></div>
+                </div>
+            </div>
+
+            </div>
+               
+             <div class="canvas col-md-8" style=" background-image:url('layout/img/background.jpg');">
+            <img id="trashB" src="layout/img/trashB.svg">
+            <img id="trashR" src="layout/img/trashR.svg">
+             </div>
+             <div class="history"><h3> history</h3>
+            <hr> </div>
+        </div> 
+                  
+             </div>
+            </div>
+            
+    
+    
+        <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
+        <script src = "https://code.jquery.com/jquery-1.10.2.js"></script>
+        <script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <script src="firebase/draw.js" type="module"></script>
+
+ 
+</body>
+</html>
